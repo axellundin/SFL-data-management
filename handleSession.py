@@ -20,7 +20,7 @@ def handleUserRequests():
 
     # Loop
 
-    THIS_SESSION = session.Session("sflsession")
+    THIS_SESSION = session.Session("")
         
     session_is_running = True
     while session_is_running: 
@@ -83,34 +83,39 @@ def handleUserRequests():
             if len(user_command) >= 3:
                 if type(user_command[1]) == str and type(user_command[2]) == str: 
                     THIS_SESSION.addRunner(user_command[1], user_command[2]) 
+                    saveSession(THIS_SESSION)
                 else:
                     print("The parameters need to be stings!")
             else:
                 print("The required parameters for this command are [FIRST NAME] [LAST NAME]. Try again!")
         elif user_command[0] == 'addsponsorship':
             if len(user_command) >= 7:
-                # try:
-                if type((int)(user_command[5])) == int and type((int)(user_command[6])) == int: 
-                    THIS_SESSION.addSponsorship(user_command[1], user_command[2], user_command[3], user_command[4], user_command[5], user_command[6])
+                try:
+                    if type((int)(user_command[5])) == int and type((int)(user_command[6])) == int: 
+                        THIS_SESSION.addSponsorship(user_command[1], user_command[2], user_command[3], user_command[4], user_command[5], user_command[6])
                     THIS_SESSION.updateRunnerInfo() 
-                #except:
-               #     print("The last two parameters need to be numbers: [LAP VALUE] [MAX VALUE].")
+                    saveSession(THIS_SESSION)
+                except:
+                    print("The last two parameters need to be numbers: [LAP VALUE] [MAX VALUE].")
             else: 
                 print("The syntax of this command is\n\t'addsponsorship [RUNNER FIRST NAME] [RUNNER LAST NAME] [SPONSOR FIRST NAME] [SPONSOR LAST NAME] [LAP VALUE] [MAX VALUE]'\n") 
         elif user_command[0] == 'removerunner':
             # MAKE SURE COMMAND IS WRITTEN IN CORRECT SYNTAX
             if len(user_command) >= 3:
                 THIS_SESSION.removeRunner(user_command[1], user_command[2])
+                saveSession(THIS_SESSION)
             else: 
                 print("The syntax for this command is: \n\t'removerunner [FIRST NAME] [LAST NAME]\nTry again!")
         elif user_command[0] == 'removesponsorship':
             if len(user_command) >=5:
                 THIS_SESSION.removeSponsorship(user_command[1], user_command[2], user_command[3], user_command[4])
+                saveSession(THIS_SESSION)
             else:
                 print("The syntax for this command is:\n\t'removesponsorship [RUNNER FIST NAME] [RUNNER LAST NAME] [SPONSOR FIRST NAME] [SPONSOR LAST NAME]\nTry again!")
         elif user_command[0] == 'changerunnername':
             if len(user_command) >=5: 
                 THIS_SESSION.changeRunnerName(user_command[1], user_command[2], user_command[3], user_command[4])
+                saveSession(THIS_SESSION)
             else:
                 print("The syntax for this command is:\n\t'changerunnername [OLD FIRST NAME] [OLD LAST NAME] [NEW FIRST NAME] [NEW LAST NAME]\nTry again!")
         elif user_command[0] == 'changerunnernumberoflaps':
@@ -118,6 +123,7 @@ def handleUserRequests():
                 try:
                     numLaps = int(user_command[3])
                     THIS_SESSION.changeNumLaps(user_command[1], user_command[2], numLaps)
+                    saveSession(THIS_SESSION)
                     continue # Break here
                 except:
                     print("The last parameter of this command has to be a number: [NUMBER OF LAPS]") 
@@ -125,9 +131,11 @@ def handleUserRequests():
                 print("The syntax for this command is:\n\t'changerunnernumberoflaps [FIRST NAME] [LAST NAME] [NUMBER OF LAPS]\nTry again!") 
         elif user_command[0] == 'changesponsorship':
             if len(user_command) >=7:
-                if type(user_command[5]) == int and type(user_command[6]) == int: 
-                    THIS_SESSION.changeSponsorship(user_command[1], user_command[2], user_command[3], user_command[4], user_command[5], user_command[6])
-                else: 
+                try:
+                    if type((int)(user_command[5])) == int and type((int)(user_command[6])) == int: 
+                        THIS_SESSION.changeSponsorship(user_command[1], user_command[2], user_command[3], user_command[4], user_command[5], user_command[6])
+                        saveSession(THIS_SESSION)
+                except: 
                     print("The last two parameters need to be numbers: [LAP VALUE] [MAX VALUE]")
             else: 
                 print("The syntax for this command is:\n\t'changesponsorship [RUNNER FIST NAME] [RUNNER LAST NAME] [SP    ONSOR FIRST NAME] [SPONSOR LAST NAME] [LAP VALUE] [MAX VALUE]") 
@@ -138,11 +146,18 @@ def handleUserRequests():
         elif user_command[0] == 'getpdf':
             pass
         elif user_command[0] == 'savesession':
-            session_name = input("What should I save the session as?\n>").split(" ")[0]
-            THIS_SESSION.saveSession(session_name)
+            saveSession(THIS_SESSION)
         else: 
             print(f"The command '{user_command[0]}' is not a valid command!\nTo find valid commands, please type 'help'")
          
+
+def saveSession(SESSION):
+    if SESSION.session_name == "":
+        session_name = input("What should I save the session as?\n>").split(" ")[0]
+        SESSION.session_name = session_name
+        SESSION.saveSession(session_name)
+    else:
+        SESSION.saveSession(SESSION.session_name)
 
 def processUserInput(user_input):
     output = user_input.lower()
@@ -186,9 +201,9 @@ def listCommands():
     print("\tlistrunners")
     print("\tlistsponsors")
     print("\tgetpdf")
-    print("---- ---- -------- ---- ---\n")
+    print("\n---- ---- -------- ---- ---\n")
     print("For more specific information, type:\n")
-    print("\t 'help [COMMANDNAME]' \n")
+    print("\t '[COMMANDNAME]' \n")
     print("To quit you can at any time type 'quit' or 'q'.\n")
 
 

@@ -126,9 +126,6 @@ def updateSponsorList(RUNNERS):
                     added_sponsor.TO_PAY += min(new_sponsor[1] * runner.number_of_laps, new_sponsor[2]) # LIMIT THE MAXIMUM SPONSORSHIP IF NECESSARY 
                     break
             if not sponsor_was_registered:
-                print(runner.number_of_laps)
-                print(new_sponsor[1])
-                print((int)(new_sponsor[1]) * (int)(runner.number_of_laps),(int)( new_sponsor[2]))
                 new_sponsor[0].TO_PAY = min((int)(new_sponsor[1]) * (int)(runner.number_of_laps),(int)( new_sponsor[2])) # LIMIT THE MAXIMUM SPONSORSHIP IF NECESSARY 
                 SPONSORS.append(new_sponsor[0])
 
@@ -170,6 +167,7 @@ class Session():
             print("No information was loaded")
 
     def modifySession(self, session_name):
+        print("körs")
         sessionsdir = os.getcwd() + "/sessions/"
 
         # Confirm directory exists
@@ -212,6 +210,7 @@ class Session():
             if runner.first_name == first_name and runner.last_name == last_name:
                 print(f"Runner {runner.first_name} {runner.last_name} was removed from the list of runners...")
                 self.RUNNERS.remove(runner)
+                self.SPONSORS = updateSponsorList(self.RUNNERS)
                 return None
         print(f"The runner {runner.first_name} {runner.last_name} could not be found!")
 
@@ -263,7 +262,7 @@ class Session():
         runner_was_found = False
         sponsorship_was_found = False
         for runner in self.RUNNERS:
-            if runner.first_name == R_FN and runner.las_name == R_LN: 
+            if runner.first_name == R_FN and runner.last_name == R_LN: 
                 runner_was_found = True
                 for sponsorship in runner.sponsor_list:
                     if sponsorship[0].first_name == S_FN and sponsorship[0].last_name == S_LN: 
@@ -271,11 +270,12 @@ class Session():
                         sponsorship[1] = value_per_lap
                         sponsorship[2] = maxval
                         self.updateRunnerInfo()
+                        self.SPONSORS = updateSponsorList(self.RUNNERS)
         if not runner_was_found: 
             print(f"The runner {R_FN} {R_LN} could not be found!")
             return None
         
-        if not sponsor_was_found:
+        if not sponsorship_was_found:
             print(f"The sponsor {S_FN} {S_LN} could not be found!") 
     
     def getRunnerInfo(self, runner_first_name, runner_last_name):
@@ -319,12 +319,14 @@ class Session():
         sessionsdir = os.getcwd() + "/sessions/"
         
         for subdir, dirs, files in os.walk(sessionsdir):
+            print(subdir)
+            print(subdir[len(sessionsdir):])
+            print(save_as)
+            print(subdir[len(sessionsdir):] == save_as)
             if subdir[len(sessionsdir):] == save_as:
-                print("There already exits information for this session.")
-                if input("Would you like to override it? [y/n]\n").lower() == 'y':
-                    self.SPONSORS = updateSponsorList(self.RUNNERS)
-                    self.modifySession(save_as)
-                    break
+                self.SPONSORS = updateSponsorList(self.RUNNERS)
+                self.modifySession(save_as)
+                return 0
 
         self.SPONSORS = updateSponsorList(self.RUNNERS)
         encodeToJSON(save_as, self.RUNNERS, self.SPONSORS)
