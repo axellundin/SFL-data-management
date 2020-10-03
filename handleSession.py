@@ -154,7 +154,7 @@ def handleUserRequests():
 
 def saveSession(SESSION):
     if SESSION.session_name == "":
-        session_name = input("What should I save the session as?\n>").split(" ")[0]
+        session_name = input("What should I save the session as?\n>").lower().split(" ")[0]
         SESSION.session_name = session_name
         SESSION.saveSession(session_name)
     else:
