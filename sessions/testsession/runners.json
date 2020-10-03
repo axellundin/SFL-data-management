@@ -1,0 +1,40 @@
+[
+  [
+    {
+      "firstname": "Axel",
+      "lastname": "Lundin",
+      "lapvalue": 0,
+      "numberoflaps": 0
+    },
+    [
+      {
+        "firstname": "Lars",
+        "lastname": "Lundin",
+        "maxval": 10,
+        "topay": 100
+      }
+    ]
+  ],
+  [
+    {
+      "firstname": "Simon",
+      "lastname": "Frisk",
+      "lapvalue": 0,
+      "numberoflaps": 0
+    },
+    [
+      {
+        "firstname": "Axel",
+        "lastname": "Lundin",
+        "maxval": 20,
+        "topay": 1000
+      },
+      {
+        "firstname": "Vivianne",
+        "lastname": "Manlai",
+        "maxval": 20,
+        "topay": 40
+      }
+    ]
+  ]
+]

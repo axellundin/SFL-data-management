@@ -1,0 +1,20 @@
+[
+  {
+    "first_name": "Lars",
+    "last_name": "Lundin",
+    "topay": 100,
+    "takenpart": false
+  },
+  {
+    "first_name": "Axel",
+    "last_name": "Lundin",
+    "topay": 1000,
+    "takenpart": false
+  },
+  {
+    "first_name": "Vivianne",
+    "last_name": "Manlai",
+    "topay": 40,
+    "takenpart": false
+  }
+]

@@ -13,8 +13,8 @@ def runnerENCODE(runner):
         sponsor_tags = {
                 "firstname": sponsor[0].first_name, 
                 "lastname": sponsor[0].last_name, 
-                "maxval": sponsor[1], 
-                "topay": sponsor[2]
+                "valueperlap": sponsor[1], 
+                "maxval": sponsor[2]
                 }
         sponsor_list.append(sponsor_tags)
 
@@ -43,7 +43,6 @@ def encodeToJSON(session_name, RUNNERS, SPONSORS):
         if subdir != sessionsdir:
             name = subdir[len(sessionsdir):]
             names_that_exist.append(name)
-    print(names_that_exist)
     
     number_of_copys=0
 
@@ -53,7 +52,7 @@ def encodeToJSON(session_name, RUNNERS, SPONSORS):
             session_name = session_name[:len(session_name) - len(str(number_of_copys-1))] + (str) (number_of_copys)
         else: 
             session_name = session_name +(str) (number_of_copys)
-    print(sessionsdir + session_name)
+    print(f"Session saved as {session_name} at {sessionsdir + session_name}...")
     
     # CREATE FOLDER
     
@@ -82,8 +81,57 @@ def encodeToJSON(session_name, RUNNERS, SPONSORS):
     # DISPLAY THE RESULT IN THE TERMINAL 
 
 
-def readFromJSON(session_name):
-    pass
+def decodeFromJSON(session_name):
+    # INIT RUNNERS LIST
+    RUNNERS = []
+
+    # INIT SPONSORS LIST
+    SPONSORS = []
+
+    # SEE IF THE SESSION EXISTS:
+    rootdir = os.getcwd()
+    sessionsdir = rootdir + "/sessions/"
+
+    session_was_found = False
+    for subdir, dirs, files in os.walk(sessionsdir):
+        if subdir != sessionsdir:
+            if subdir[len(sessionsdir):] == session_name:
+                session_was_found = True
+                with open(sessionsdir +session_name + "/runners.json", "r") as runnersFile:
+                    runner_list = json.loads(runnersFile.read())
+
+    if not session_was_found: 
+        print(f"The session {session_name} could not be found")
+        return None, None
+    for new_runner in runner_list: 
+        NEW_RUNNER = runner.Runner(new_runner[0].get("firstname"), new_runner[0].get("lastname")) 
+        NEW_RUNNER.value_per_lap = new_runner[0].get("lapvalue") 
+        NEW_RUNNER.number_of_laps = new_runner[0].get("numberoflaps")
+        
+        for sponsorship in new_runner[1]: 
+            NEW_RUNNER.addSponsorship(sponsorship.get("firstname"), sponsorship.get("lastname"), sponsorship.get("valueperlap"), sponsorship.get("maxval"))
+        RUNNERS.append(NEW_RUNNER)
+
+    return RUNNERS, updateSponsorList(RUNNERS) 
+
+def updateSponsorList(RUNNERS):
+    SPONSORS = []
+
+    for runner in RUNNERS:
+        for new_sponsor in runner.sponsor_list: 
+            sponsor_was_registered = False
+            for added_sponsor in SPONSORS: # CHECK IF THE SPONSOR HAS ALREADY BEEN REGISTERED
+                if added_sponsor.first_name == new_sponsor[0].first_name and added_sponsor.last_name ==  new_sponsor[0].last_name: 
+                    sponsor_was_registered = True
+                    added_sponsor.TO_PAY += min(new_sponsor[1] * runner.number_of_laps, new_sponsor[2]) # LIMIT THE MAXIMUM SPONSORSHIP IF NECESSARY 
+                    break
+            if not sponsor_was_registered:
+                new_sponsor[0].TO_PAY = min(new_sponsor[1] * runner.number_of_laps, new_sponsor[2]) # LIMIT THE MAXIMUM SPONSORSHIP IF NECESSARY 
+                SPONSORS.append(new_sponsor[0])
+
+    return SPONSORS
+
+
 
 class Session():
     ''' This is a class that holds information about a complete session of the 
@@ -94,16 +142,19 @@ class Session():
     def __init__(self, session_name, MODE='REGULAR'):
         
         self.session_name = session_name
-
+        self.SPONSORS = []
+        self.RUNNERS = []
         if MODE=='REGULAR':
-            # SPONSORS INIT
-            self.SPONSORS = []
-            
-            # RUNNERS INIT
-            self.RUNNERS = []
+            pass # THIS DOES NOT DO ANTTHING ANYMORE
         elif MODE=='READ':
             while True:
                 session_name = input("Please enter the name of the session that you would like to enter:\n")
+                self.RUNNERS, self.SPONSORS = decodeFromJSON(session_name)
+                if self.RUNNERS == None or self.SPONSORS == None:
+                    continue
+                else: 
+                    break
+
 
     def addRunner(self, first_name, last_name):
         NEW_RUNNER = runner.Runner(first_name, last_name)
@@ -122,11 +173,78 @@ class Session():
         for runner in self.RUNNERS:
             if runner.first_name == runner_FN and runner.last_name == runner_LN:
                 runner.addSponsorship(sponsor_FN, sponsor_LN, value_per_lap, maxcost) 
+                self.SPONSORS = updateSponsorList(self.RUNNERS) # UPDATE THE SPONSOR LIST
                 print("The sponsorship was added!")
                 return None
         print("The sponsorship could not be found!")
+    
+    def changeRunnerName(self, old_FN, old_LN, new_FN, new_LN):
+        runner_was_found = False # Default value
+        for runner in self.RUNNERS: 
+            if runner.first_name == old_FN and runner.last_name == old_LN:
+                runner.first_name = new_FN
+                runner.last_name = new_LN
+                runner_was_found = True
+                print(f"The name of the runner {old_FN} {old_LN} was changed to {new_FN} {new}_LN")
+        if not runner_was_found: 
+            print(f"Runner {old_FN} {old_LN} could not be found in current session!")
+    
+    def changeNumLaps(self, R_FN, R_LN, NumLaps):
+        runner_was_found = False
+
+        for runner in self.RUNNERS:
+            if runner.first_name == R_FN and runner.last_name == R_LN:
+                runner_was_found = True
+                runner.number_of_laps = NumLaps
+                print("The value was changed!")
+
+        if not runner_was_found:
+            print(f"The runner {R_FN} {R_LN} could not be found!") 
+
+    def changeSponsorship(self, R_FN, R_LN, S_FN, S_LN, value_per_lap, maxval):
+        runner_was_found = False
+        sponsorship_was_found = False
+        for runner in self.RUNNERS:
+            if runner.first_name == R_FN and runner.las_name == R_LN: 
+                runner_was_found = True
+                for sponsorship in runner.sponsor_list:
+                    if sponsorship[0].first_name == S_FN and sponsorship[0].last_name == S_LN: 
+                        sponsorship_was_found = True
+                        sponsorship[1] = value_per_lap
+                        sponsorship[2] = maxval
+        if not runner_was_found: 
+            print(f"The runner {R_FN} {R_LN} could not be found!")
+            return None
+        
+        if not sponsor_was_found:
+            print(f"The sponsor {S_FN} {S_LN} could not be found!") 
+    
+    def getRunnerInfo(self, runner_first_name, runner_last_name):
+        runner_was_found = False
+
+        for runner in self.RUNNERS: 
+            if runner.first_name == runner_first_name and runner.first_name == runner_first_name: 
+                runner_was_found = True
+                print("-----------RUNNER INFO-----------")
+                print(f"Name: {runner.first_name} {runner.last_name}") 
+                print(f"Value per lap: {runner.value_per_lap}")
+                print(f"Number of laps: {runner.number_of_laps}") 
+                print(f"Collected in total: {runner.collected_in_total}")
+                print("----------------------------------") 
+                break
+        if not runner_was_found: 
+            print("The runner {runner_first_name} {runner_last_name} could not be found!") 
+
+    def getSponsorInfo(self): 
+        pass
+
+    def saveSession(self):
+        self.SPONSORS = updateSponsorList(self.RUNNERS)
+        encodeToJSON(self.session_name, self.RUNNERS, self.SPONSORS)
 
 if __name__ == '__main__':
+    # THIS IS A PORTION OF THE CODE THAT IS USED TO TEST DIFFERENT SEQUENCES OF 
+    # FUNCTION CALLS...
     session = Session("testsession") 
     session.addRunner("Axel", "Lundin")
     session.addRunner("Simon", "Frisk")
