@@ -1,5 +1,5 @@
 import runner, sponsor, session
-import os, json, shutil
+import os, json, shutil, createPDF
 
 version = 1.0
 
@@ -144,7 +144,8 @@ def handleUserRequests():
         elif user_command[0] == 'listsponsors':
             THIS_SESSION.listSponsors()
         elif user_command[0] == 'getpdf':
-            pass
+            createPDF.writeToPDF(THIS_SESSION)
+            print("The session was written to PDF!")
         elif user_command[0] == 'savesession':
             saveSession(THIS_SESSION)
         else: 

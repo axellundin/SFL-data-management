@@ -1,0 +1,18 @@
+[
+  [
+    {
+      "firstname": "lars",
+      "lastname": "lundin",
+      "lapvalue": 30,
+      "numberoflaps": 20
+    },
+    [
+      {
+        "firstname": "janet",
+        "lastname": "cunningham",
+        "valueperlap": "30",
+        "maxval": "10000"
+      }
+    ]
+  ]
+]
