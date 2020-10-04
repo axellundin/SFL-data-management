@@ -167,7 +167,6 @@ class Session():
             print("No information was loaded")
 
     def modifySession(self, session_name):
-        print("körs")
         sessionsdir = os.getcwd() + "/sessions/"
 
         # Confirm directory exists
@@ -319,10 +318,6 @@ class Session():
         sessionsdir = os.getcwd() + "/sessions/"
         
         for subdir, dirs, files in os.walk(sessionsdir):
-            print(subdir)
-            print(subdir[len(sessionsdir):])
-            print(save_as)
-            print(subdir[len(sessionsdir):] == save_as)
             if subdir[len(sessionsdir):] == save_as:
                 self.SPONSORS = updateSponsorList(self.RUNNERS)
                 self.modifySession(save_as)

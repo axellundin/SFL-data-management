@@ -57,7 +57,7 @@ def writeToPDF(SESSION):
     inputted_path_runners = pdfsessiondir +r"/runnerlist.tex " 
     inputted_path_sponsors = pdfsessiondir +r"/sponsorlist.tex " 
     os.system(f"pdflatex -output-directory={pdfsessiondir} {inputted_path_runners}")
-    os.system(f"pdflatex -output-directory={pdfsessiondir} {inputted_path_runners}")
+    os.system(f"pdflatex -output-directory={pdfsessiondir} {inputted_path_sponsors}")
 
 if __name__ == '__main__':
     writeToPDF(2)
