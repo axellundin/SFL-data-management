@@ -118,7 +118,7 @@ def handleUserRequests():
                 saveSession(THIS_SESSION)
             else:
                 print("The syntax for this command is:\n\t'changerunnername [OLD FIRST NAME] [OLD LAST NAME] [NEW FIRST NAME] [NEW LAST NAME]\nTry again!")
-        elif user_command[0] == 'changerunnernumberoflaps':
+        elif user_command[0] == 'changenumlaps':
             if len(user_command) >=4:
                 try:
                     numLaps = int(user_command[3])
@@ -128,7 +128,7 @@ def handleUserRequests():
                 except:
                     print("The last parameter of this command has to be a number: [NUMBER OF LAPS]") 
             else: 
-                print("The syntax for this command is:\n\t'changerunnernumberoflaps [FIRST NAME] [LAST NAME] [NUMBER OF LAPS]\nTry again!") 
+                print("The syntax for this command is:\n\t'changenumlaps [FIRST NAME] [LAST NAME] [NUMBER OF LAPS]\nTry again!") 
         elif user_command[0] == 'changesponsorship':
             if len(user_command) >=7:
                 try:
@@ -178,7 +178,7 @@ def listCommands():
     # removerunner
     # removesponsorship
     # changerunnername
-    # changerunnernumberoflaps
+    # changenumlaps
     # changesponsorship
     # listrunners
     # listsponsors
@@ -197,7 +197,7 @@ def listCommands():
     print("\tremoverunner")
     print("\tremovesponsorship")
     print("\tchangerunnername")
-    print("\tchangerunnernumberoflaps")
+    print("\tchangenumlaps")
     print("\tchangesponsorship")
     print("\tlistrunners")
     print("\tlistsponsors")
