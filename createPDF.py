@@ -1,6 +1,43 @@
 import sponsor, runner
 import session, os
 
+def sortRunnersAlphabetical(RUNNERS):
+    SORTED_LIST = []
+    
+    alphabet = "abcdefghijklmnopqrstuvwzxyåäö"
+    
+    
+    tmp_list = []
+    # Give each runner a score
+    for runner in RUNNERS:
+        number = list(alphabet).index(runner.last_name[0])
+        tmp_list.append([number, runner]) 
+    
+    for i in range(len(alphabet)):
+        for entry in tmp_list:
+            if entry[0] == i:
+                SORTED_LIST.append(entry[1])
+    
+    return SORTED_LIST
+
+def sortSponsorsAlphabetical(SPONSORS):
+    SORTED_LIST = []
+
+    alphabet = "abcdefghijklmnopqrstuvwzxyåäö"
+
+    tmp_list = []
+    # Give each sponsor a score
+    for sponsor in SPONSORS:
+        number = list(alphabet).index(sponsor.last_name[0])
+        tmp_list.append([number, sponsor])
+
+    for i in range(len(alphabet)):
+        for entry in tmp_list:
+            if entry[0] == i:
+                SORTED_LIST.append(entry[1])
+
+    return SORTED_LIST
+
 def writeToPDF(SESSION):
 
     # create folder
@@ -32,11 +69,16 @@ def writeToPDF(SESSION):
         with open(pdfsessiondir + "/sponsorlist.tex", "w") as texFile:
             for line in template.readlines():
                 if '%' in line:
-                    for sponsor in SESSION.SPONSORS:
+                    SORTED_SPONSOR_LIST = sortSponsorsAlphabetical(SESSION.SPONSORS)
+                    total_sum = 0
+                    for sponsor in SORTED_SPONSOR_LIST:
+                        total_sum += (int)(sponsor.TO_PAY)
                         sponsor_FN = sponsor.first_name[0].upper() + sponsor.first_name[1:]
                         sponsor_LN = sponsor.last_name[0].upper() + sponsor.last_name[1:]
                         newline =  f"\t\t{sponsor_LN} & {sponsor_FN} & & {sponsor.TO_PAY}" + r"\\" + "\n\t\t" + r"\hline" + "\n"
                         texFile.write(newline) 
+                    texFile.write(f"& & Summa:& {total_sum}" + r"\\" + "\n\t\t" + r"\hline" + "\n")
+
                 else:
                     texFile.write(line)
     #RUNNERS
@@ -44,11 +86,16 @@ def writeToPDF(SESSION):
         with open(pdfsessiondir + "/runnerlist.tex", "w") as texFile:
             for line in template.readlines():
                 if '%' in line:
-                    for runner in SESSION.RUNNERS:
+                    SORTED_RUNNERS_LIST = sortRunnersAlphabetical(SESSION.RUNNERS)
+                    total_sum = 0
+                    for runner in SORTED_RUNNERS_LIST:
+                        total_sum += (int)(runner.collected_in_total)
                         runner_FN = runner.first_name[0].upper() + runner.first_name[1:]
                         runner_LN = runner.last_name[0].upper() + runner.last_name[1:]
                         newline = f"\t\t{runner_LN} & {runner_FN} & {runner.number_of_laps} & {runner.collected_in_total}" + r"\\" + "\n\t\t" + r"\hline" + "\n"
                         texFile.write(newline)
+                    texFile.write(f"\t\t& & Summa: & {total_sum}" + r"\\" + "\n\t\t" + r"\hline" + "\n")
+
                 else:
                     texFile.write(line)
 

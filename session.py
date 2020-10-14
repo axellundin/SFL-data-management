@@ -123,7 +123,7 @@ def updateSponsorList(RUNNERS):
             for added_sponsor in SPONSORS: # CHECK IF THE SPONSOR HAS ALREADY BEEN REGISTERED
                 if added_sponsor.first_name == new_sponsor[0].first_name and added_sponsor.last_name ==  new_sponsor[0].last_name: 
                     sponsor_was_registered = True
-                    added_sponsor.TO_PAY += min(new_sponsor[1] * runner.number_of_laps, new_sponsor[2]) # LIMIT THE MAXIMUM SPONSORSHIP IF NECESSARY 
+                    added_sponsor.TO_PAY += min((int)(new_sponsor[1]) *(int) (runner.number_of_laps),(int) (new_sponsor[2])) # LIMIT THE MAXIMUM SPONSORSHIP IF NECESSARY 
                     break
             if not sponsor_was_registered:
                 new_sponsor[0].TO_PAY = min((int)(new_sponsor[1]) * (int)(runner.number_of_laps),(int)( new_sponsor[2])) # LIMIT THE MAXIMUM SPONSORSHIP IF NECESSARY 

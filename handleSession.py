@@ -78,6 +78,10 @@ def handleUserRequests():
                     
             if not there_was_session:
                 print("There are no sessions...")
+        elif user_command[0] == 'ingespecial':
+            for runner in THIS_SESSION.RUNNERS:
+                THIS_SESSION.addSponsorship(runner.first_name, runner.last_name, "inge", "bruce", 10 , 100000)
+                saveSession(THIS_SESSION)
         elif user_command[0] == 'addrunner':
             # CONTROL THAT THE INPUT HAS THE CORRECT NUMBER OF PARAMETERS AND THAT THEY ARE THE CORRECT TYPE
             if len(user_command) >= 3:
@@ -90,13 +94,13 @@ def handleUserRequests():
                 print("The required parameters for this command are [FIRST NAME] [LAST NAME]. Try again!")
         elif user_command[0] == 'addsponsorship':
             if len(user_command) >= 7:
-                try:
-                    if type((int)(user_command[5])) == int and type((int)(user_command[6])) == int: 
-                        THIS_SESSION.addSponsorship(user_command[1], user_command[2], user_command[3], user_command[4], user_command[5], user_command[6])
+                # try:
+                if type((int)(user_command[5])) == int and type((int)(user_command[6])) == int: 
+                    THIS_SESSION.addSponsorship(user_command[1], user_command[2], user_command[3], user_command[4], user_command[5], user_command[6])
                     THIS_SESSION.updateRunnerInfo() 
                     saveSession(THIS_SESSION)
-                except:
-                    print("The last two parameters need to be numbers: [LAP VALUE] [MAX VALUE].")
+                # except:
+                #    print("The last two parameters need to be numbers: [LAP VALUE] [MAX VALUE].")
             else: 
                 print("The syntax of this command is\n\t'addsponsorship [RUNNER FIRST NAME] [RUNNER LAST NAME] [SPONSOR FIRST NAME] [SPONSOR LAST NAME] [LAP VALUE] [MAX VALUE]'\n") 
         elif user_command[0] == 'removerunner':

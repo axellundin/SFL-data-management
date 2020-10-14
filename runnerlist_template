@@ -1,7 +1,10 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage[right=1cm, left=1cm]{geometry}
+\usepackage{longtable}
 \setlength{\parindent}{0cm}
+
+
 
 \begin{document}
 \begin{center}
@@ -11,13 +14,13 @@
     \vspace{6ex}
         
         \Huge
-        \begin{tabular}{|c|c|c|c|c|}
+        \begin{longtable}{|c|c|c|c|c|}
             \hline 
             \textbf{Efternamn} & \textbf{Förnamn} & \textbf{Antal varv} & \textbf{Summa} \\
             \hline 
             \hline
             % HÄR SKA MAN LÄGGA IN NYA SAKER
             \hline
-        \end{tabular}
+        \end{longtable}
     \end{center}
 \end{document}
